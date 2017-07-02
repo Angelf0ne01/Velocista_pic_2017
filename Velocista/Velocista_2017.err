@@ -1,0 +1,8 @@
+>>> Warning 229 "Velocista_2017.c" Line 246(1,1): Subscript out of range
+>>> Warning 229 "Velocista_2017.c" Line 247(1,1): Subscript out of range
+>>> Warning 203 "Velocista_2017.c" Line 325(1,1): Condition always TRUE
+>>> Warning 202 "Velocista_2017.c" Line 26(6,9): Variable never used:   aux
+>>> Warning 202 "Velocista_2017.c" Line 28(7,15): Variable never used:   auxfloat
+      Memory usage:   ROM=13%      RAM=6% - 8%
+      0 Errors,  5 Warnings.
+Build Successful.

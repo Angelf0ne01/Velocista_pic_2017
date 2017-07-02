@@ -1,0 +1,336 @@
+#include <18F2550.h>
+#device ADC=10                             
+#include <math.h>    
+#BYTE PORTA = 0xF80
+#BYTE PORTB = 0xF81
+#FUSES XT,MCLR,NOWDT,NOBROWNOUT, NOLVP, NOXINST
+#use delay(crystal=20000000)                     
+#use rs232(baud=9600, xmit=PIN_C6, rcv=PIN_C7)  
+
+#define borde_izq 4
+#define med_izq 8
+#define cent_izq 3
+#define cent_der 2
+#define med_der 1
+#define borde_der 0
+
+
+#define pulsador PIN_B0;
+
+
+int16 duty=200;
+int16 pwm_m_izq;
+int16 pwm_m_der;
+
+int32 aux32,num,den;
+int8 aux,temp;
+char TablaNumeros[10]={'0','1','2','3','4','5','6','7','8','9'};
+float auxfloat;
+//////////////////////////////////////////////////////////////////////////////////
+int puntero;
+float value, sensor[8];
+//////////////////////////////////////////////////////////////////////////////////
+float set_point=2.5;
+
+float numerador;
+float denominador;
+float promedio;
+float error;
+float integral;
+float derivativo;
+float Pid;
+float error_anterior;
+
+int1 Encarrera=0;
+
+int16 pwm;
+int16 ganancia_pwm=50;
+//////////////////////////////////////////////////////////////////////////////////
+int sensor_valor_min[6];
+int sensor_valor_max[6];
+
+void MostrarINT32 (int32 valor)
+{
+   aux32 = valor;
+   temp=0;
+   if(aux32 >= 100000)
+   {
+      while(aux32 >= 100000)
+      {
+         aux32 = aux32 - 100000;
+         temp++;
+      }
+      if(temp>9) temp = 0;
+      //centena = temp;       // Actualizo la centena a mostrar
+      putc(TablaNumeros[temp]);
+      temp = 0;
+   }
+   if(aux32 >= 10000)  // Valor entre 10000 y 65535 (maximo valor admitido por int16) 
+   {
+      while(aux32 >= 10000)
+      {
+         aux32 = aux32 - 10000;
+         temp++;
+      }
+      if(temp>9) temp = 0;
+      //centena = temp;       // Actualizo la centena a mostrar
+      putc(TablaNumeros[temp]);
+      temp = 0;
+      while(aux32 >= 1000)
+      {
+         aux32 = aux32 - 1000;
+         temp++;
+      }
+      if(temp>9) temp = 0;
+      //centena = temp;       // Actualizo la centena a mostrar
+      putc(TablaNumeros[temp]);
+      temp = 0;
+   }    
+   else if (aux32 >= 1000)     // Valor entre 1000 y 9999
+   {
+      while(aux32 >= 1000)
+      {
+         aux32 = aux32 - 1000;
+         temp++;
+      }
+      if(temp>9) temp = 0;
+      //centena = temp;       // Actualizo la centena a mostrar
+      putc(TablaNumeros[temp]);
+      temp = 0;
+   }
+   
+   while(aux32 >= 100)
+   {
+      aux32 = aux32 - 100;
+      temp++;
+   }
+   if(temp>9) temp = 0;
+   //centena = temp;       // Actualizo la centena a mostrar
+   putc(TablaNumeros[temp]);
+   temp = 0;
+            
+   while(aux32 >= 10)
+   {
+      aux32 = aux32-10;
+      temp++;
+   }
+   if(temp>9) temp = 0;
+   putc(TablaNumeros[temp]);
+   temp = 0;
+   while(aux32 >= 1)
+   {
+      aux32 = aux32-1;
+      temp++;
+   }
+   if(temp>9) temp = 0;
+   putc(TablaNumeros[temp]);
+   temp = 0;
+   return;
+}
+
+void MostrarFloat (float valor)
+{
+   float decimales, unidades;
+   if(valor < 0)  // Valor entre 10000 y 65535 (maximo valor admitido por int16)
+   {
+      putc('-');  // Muestro el signo si es negativo
+      valor = -(valor);    // cambio el signo para trabajar con numeros positivos 
+                                 // el signo ya lo mostre.
+   }
+   decimales=modf(valor,&unidades);
+   aux32 = unidades;
+   // comienzo a mostrar la parte entera del float
+   temp=0; 
+   if(aux32>10000)
+   {
+      while(aux32 >= 10000)
+      {
+         aux32 = aux32 - 10000;
+         temp++;
+      }
+      if(temp>9) temp = 0;
+      putc(TablaNumeros[temp]);
+      temp = 0;
+      while(aux32 >= 1000)
+      {
+         aux32 = aux32 - 1000;
+         temp++;
+      }
+      if(temp>9) temp = 0;
+      putc(TablaNumeros[temp]);
+      temp = 0;
+   }    
+   else if (aux32 >= 1000)     // Valor entre 1000 y 9999
+   {
+      while(aux32 >= 1000)
+      {
+         aux32 = aux32 - 1000;
+         temp++;
+      }
+      if(temp>9) temp = 0;
+      //centena = temp;       // Actualizo la centena a mostrar
+      putc(TablaNumeros[temp]);
+      temp = 0;
+   }
+   
+   while(aux32 >= 100)
+   {
+      aux32 = aux32 - 100;
+      temp++;
+   }
+   if(temp>9) temp = 0;
+   //centena = temp;       // Actualizo la centena a mostrar
+   putc(TablaNumeros[temp]);
+   temp = 0;
+            
+   while(aux32 >= 10)
+   {
+      aux32 = aux32-10;
+      temp++;
+   }
+   if(temp>9) temp = 0;
+   putc(TablaNumeros[temp]);
+   temp = 0;
+   while(aux32 >= 1)
+   {
+      aux32 = aux32-1;
+      temp++;
+   }
+   if(temp>9) temp = 0;
+   putc(TablaNumeros[temp]);
+   temp = 0;
+   
+   // ahora muestro los decimales
+   putc('.');
+   while(decimales >= 0.1)
+   {
+      decimales = decimales-0.1;
+      temp++;
+   }
+   if(temp>9) temp = 0;
+   putc(TablaNumeros[temp]);
+   temp = 0;
+   while(decimales >= 0.01)
+   {
+      decimales = decimales-0.01;
+      temp++;
+   }
+   if(temp>9) temp = 0;
+   putc(TablaNumeros[temp]);
+   temp = 0;
+   return;
+}
+void lectura_de_sensores(){
+//4-5-3-2-1-0   
+   for(puntero=0;puntero<9;puntero++)
+   {
+      set_adc_channel(puntero);  //Selecciono el puerto analogico
+      value=read_adc(); //leo el valor del adc y lo guardo en "value"
+      Sensor[puntero]=value*500.0/1024.0; //El adc vale de 0 a 500
+      
+      if(sensor[puntero]<sensor_valor_min[puntero]) sensor_valor_min[puntero]=sensor[puntero];
+      if(sensor[puntero]>sensor_valor_max[puntero]) sensor_valor_max[puntero]=sensor[puntero];
+      
+      int32 num=(sensor[puntero]-sensor_valor_min[puntero]);
+      num*=1000.0;
+      int32 den=(sensor_valor_max[puntero]-sensor_valor_min[puntero]);
+      float aux_sensor_float=(float)num/den;
+      sensor[puntero]=(int16)aux_sensor_float;
+      
+   }
+
+}
+
+void Control_PID(float Kp,float Kd,float ki)
+{
+   numerador=((sensor[borde_izq])+(sensor[med_izq]*2)+(sensor[cent_izq]*3)+(sensor[cent_der]*4)+(sensor[med_der]*5)+(sensor[borde_der]*6));
+   denominador=(sensor[borde_izq]+sensor[med_izq]+sensor[cent_izq]+sensor[cent_der]+sensor[med_der]+sensor[borde_der]);
+   
+   promedio=(numerador/denominador);
+
+   error=(promedio-set_point);
+
+   integral+=error_anterior;
+   
+   derivativo=(error-error_anterior);
+   
+   pid=((Kp*error)+(kd*derivativo)+(Ki*integral));
+   
+   error_anterior=error;
+   
+}
+
+void Actualizo_motores()
+{
+   if(pid>0)
+   {
+      pwm=(INT16)pid*ganancia_pwm;
+      pwm_m_izq=(duty+pwm);
+      set_pwm2_duty(100);
+      set_pwm1_duty(pwm_m_izq);   
+   }
+   if(pid<0)
+   {
+      pid = ((-1)*pid);        // Cambio el signo para ajustar el rango
+      pwm = (pid*ganancia_pwm);
+      pwm_m_der = (duty+pwm);
+      set_pwm2_duty(pwm_m_der);
+      set_pwm1_duty(100);
+   }
+}
+
+void mostrar_pantalla()
+{
+   putc('A');
+   mostrarINT32(Sensor[0]);
+   putc(' ');
+    putc('B');
+   mostrarINT32(Sensor[1]);
+   putc(' ');
+    putc('C');
+   mostrarINT32(Sensor[2]);
+   putc(' ');
+    putc('D');
+   mostrarINT32(Sensor[3]);
+   putc(' ');
+    putc('E');
+   mostrarINT32(Sensor[4]);
+   putc(' ');
+   putc('F');
+   mostrarINT32(Sensor[5]);
+   putc(' ');
+   putc('I');
+   mostrarINT32(Sensor[8]);
+ 
+   putc(13);   
+   putc(10);   
+}
+
+Void main()
+{
+     
+     setup_uart(9600);     
+   setup_adc_ports(AN0_TO_AN8);
+   setup_adc(ADC_CLOCK_DIV_2|ADC_TAD_MUL_0);
+
+     setup_timer_2(T2_DIV_BY_16,255,1);      //819 us overflow, 819 us interrupt
+     setup_ccp1(CCP_PWM);
+     setup_ccp2(CCP_PWM);
+    set_pwm1_duty((int16)1);      
+     set_pwm2_duty((int16)1);
+     setup_timer_0(RTCC_INTERNAL|RTCC_DIV_32|RTCC_8_bit);      //1,6 ms overflow
+     enable_interrupts(INT_TIMER0);  
+     enable_interrupts(GLOBAL);    
+
+  while(1){
+     lectura_de_sensores();
+     if(input(PIN_B0)==0b0) Encarrera=1;
+      while(Encarrera){
+         lectura_de_sensores();
+         control_pid(1.4,1,0); //kp,ki,kd
+         actualizo_motores();
+         //mostrar_pantalla();   
+         
+        }
+  }
+}
