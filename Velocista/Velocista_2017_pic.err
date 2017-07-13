@@ -1,0 +1,5 @@
+>>> Warning 202 "Velocista_2017_pic.c" Line 30(6,9): Variable never used:   aux
+>>> Warning 202 "Velocista_2017_pic.c" Line 32(7,15): Variable never used:   auxfloat
+      Memory usage:   ROM=27%      RAM=8% - 11%
+      0 Errors,  2 Warnings.
+Build Successful.

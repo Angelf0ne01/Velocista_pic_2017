@@ -1,0 +1,20 @@
+[PROJECT]
+Target=Velocista_2017_pic.hex
+Processor_Text=PIC18F2550
+CCSVersion=5.015
+Compiler=PCH
+[Target Data]
+FileList=Velocista_2017_pic.c
+[Directories]
+Include=C:\Program Files (x86)\PICC\Devices\;C:\Program Files (x86)\PICC\Drivers\;C:\Program Files (x86)\PICC\Drivers\C:\Program Files (x86)\PICC\Devices\
+[Velocista_2017_pic.c]
+Type=4
+[mru-list]
+1=Velocista_2017_pic.c
+[Opened Files]
+1=Velocista_2017_pic.c
+2=
+3=
+[Units]
+Count=1
+1=Velocista_2017_pic (main)

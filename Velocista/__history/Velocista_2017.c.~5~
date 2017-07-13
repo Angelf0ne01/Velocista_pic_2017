@@ -1,5 +1,5 @@
 #include <18F2550.h>
-#device ADC=10                             / 
+#device ADC=10                             
 #include <math.h>    
 #BYTE PORTA = 0xF80
 #BYTE PORTB = 0xF81
@@ -8,7 +8,7 @@
 #use rs232(baud=9600, xmit=PIN_C6, rcv=PIN_C7)  
 
 #define borde_izq 4
-#define med_izq 8
+#define med_izq 5
 #define cent_izq 3
 #define cent_der 2
 #define med_der 1
@@ -28,9 +28,9 @@ char TablaNumeros[10]={'0','1','2','3','4','5','6','7','8','9'};
 float auxfloat;
 //////////////////////////////////////////////////////////////////////////////////
 int puntero;
-float value, sensor[8];
+float value, sensor[6];
 //////////////////////////////////////////////////////////////////////////////////
-float set_point=2.5;
+float set_point=3.5;
 
 float numerador;
 float denominador;
@@ -46,8 +46,8 @@ int1 Encarrera=0;
 int16 pwm;
 int16 ganancia_pwm=50;
 //////////////////////////////////////////////////////////////////////////////////
-int sensor_valor_min[6];
-int sensor_valor_max[6];
+float sensor_valor_min[6];
+float sensor_valor_max[6];
 
 void MostrarINT32 (int32 valor)
 {
@@ -222,10 +222,10 @@ void MostrarFloat (float valor)
 }
 void lectura_de_sensores(){
 //4-5-3-2-1-0   
-   for(puntero=0;puntero<9;puntero++)
+   for(puntero=0;puntero<5;puntero++)
    {
       set_adc_channel(puntero);  //Selecciono el puerto analogico
-      value=read_adc(); //leo el valor del adc y lo guardo en "value"
+      value=1024-read_adc(); //leo el valor del adc y lo guardo en "value"
       Sensor[puntero]=value*500.0/1024.0; //El adc vale de 0 a 500
       
       if(sensor[puntero]<sensor_valor_min[puntero]) sensor_valor_min[puntero]=sensor[puntero];
@@ -235,9 +235,20 @@ void lectura_de_sensores(){
       num*=1000.0;
       int32 den=(sensor_valor_max[puntero]-sensor_valor_min[puntero]);
       float aux_sensor_float=(float)num/den;
-      sensor[puntero]=(int16)aux_sensor_float;
-      
+      sensor[puntero]=(int16)aux_sensor_float;   
    }
+      set_adc_channel(8);  
+      value=1024-read_adc(); 
+      Sensor[5]=value*500.0/1024.0;
+      
+      if(sensor[5]<sensor_valor_min[5]) sensor_valor_min[5]=sensor[5];
+      if(sensor[5]>sensor_valor_max[5]) sensor_valor_max[5]=sensor[5];
+      
+      int32 num=(sensor[5]-sensor_valor_min[5]);
+      num*=1000.0;
+      int32 den=(sensor_valor_max[5]-sensor_valor_min[5]);
+      float aux_sensor_float=(float)num/den;
+      sensor[5]=(int16)aux_sensor_float;   
 
 }
 
@@ -266,7 +277,7 @@ void Actualizo_motores()
    {
       pwm=(INT16)pid*ganancia_pwm;
       pwm_m_izq=(duty+pwm);
-      set_pwm2_duty(100);
+      set_pwm2_duty(duty);
       set_pwm1_duty(pwm_m_izq);   
    }
    if(pid<0)
@@ -275,33 +286,29 @@ void Actualizo_motores()
       pwm = (pid*ganancia_pwm);
       pwm_m_der = (duty+pwm);
       set_pwm2_duty(pwm_m_der);
-      set_pwm1_duty(100);
+      set_pwm1_duty(duty);
    }
 }
 
 void mostrar_pantalla()
 {
-   putc('A');
-   mostrarINT32(Sensor[0]);
+   printf("SBD= "); //Sensor Borde Derecho
+   mostrarINT32(Sensor[borde_der]);
    putc(' ');
-    putc('B');
-   mostrarINT32(Sensor[1]);
+   printf("SMD= "); //Sensor Medio Derecho
+   mostrarINT32(Sensor[med_der]);
    putc(' ');
-    putc('C');
-   mostrarINT32(Sensor[2]);
+   printf("SCD= "); //Sensor Centro Derecho 
+   mostrarINT32(Sensor[cent_der]);
    putc(' ');
-    putc('D');
-   mostrarINT32(Sensor[3]);
+   printf("SCI= "); //Sensor Centro Izquierdo
+   mostrarINT32(Sensor[cent_izq]);
    putc(' ');
-    putc('E');
-   mostrarINT32(Sensor[4]);
+   printf("SMI= "); //Sesor Medio Izquierdo
+   mostrarINT32(Sensor[med_izq]);
    putc(' ');
-   putc('F');
-   mostrarINT32(Sensor[5]);
-   putc(' ');
-   putc('I');
-   mostrarINT32(Sensor[8]);
- 
+   printf("SBI= "); //Sensor Borde Izquierdo
+   mostrarINT32(Sensor[borde_izq]); 
    putc(13);   
    putc(10);   
 }
@@ -310,27 +317,28 @@ Void main()
 {
      
      setup_uart(9600);     
-   setup_adc_ports(AN0_TO_AN8);
-   setup_adc(ADC_CLOCK_DIV_2|ADC_TAD_MUL_0);
+     setup_adc_ports(AN0_TO_AN8);
+     setup_adc(ADC_CLOCK_DIV_2|ADC_TAD_MUL_0);
 
      setup_timer_2(T2_DIV_BY_16,255,1);      //819 us overflow, 819 us interrupt
      setup_ccp1(CCP_PWM);
      setup_ccp2(CCP_PWM);
-    set_pwm1_duty((int16)1);      /
+     set_pwm1_duty((int16)1);      
      set_pwm2_duty((int16)1);
      setup_timer_0(RTCC_INTERNAL|RTCC_DIV_32|RTCC_8_bit);      //1,6 ms overflow
      enable_interrupts(INT_TIMER0);  
      enable_interrupts(GLOBAL);    
-
-  while(1){
-     lectura_de_sensores();
-     if(input(PIN_B0)==0b0) Encarrera=1;
-      while(Encarrera){
-         lectura_de_sensores();
-         control_pid(1.4,1,0); //kp,ki,kd
-         actualizo_motores();
-         //mostrar_pantalla();   
-         
-        }
+     for(puntero=0;puntero<6;puntero++) Sensor[puntero]=250;
+  while(1)
+  {
+   lectura_de_sensores();
+   if(input(PIN_B0)==0b0) Encarrera=1;
+   while(Encarrera)
+   {
+      lectura_de_sensores();
+      control_pid(1.4,1,0); //kp,ki,kd
+      actualizo_motores();
+      mostrar_pantalla();       
+   }
   }
 }

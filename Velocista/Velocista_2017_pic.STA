@@ -1,0 +1,75 @@
+
+ROM used:   8710/32768 (27%)
+            8710/32768 (27%) including unused fragments
+
+            2.6 Average locations per line
+            16.9 Average locations per statement
+
+RAM used:   174/2048 (8%) at main() level
+            232/2048 (11%) worst case
+
+Stack used: 6 worst case (6 in main + 0 for interrupts)
+Stack size: 31
+
+Lines Stmts  %   Files
+----- ----- ---  -----
+  403   257  50  Velocista_2017_pic.c
+  775     0   0  C:\Program Files (x86)\PICC\Devices\18F2550.h
+ 2229   257  50  C:\Program Files (x86)\PICC\Drivers\math.h
+----- -----
+ 3407   514 Total
+
+Page ROM  %  RAM   Vol Diff  Functions:
+---- --- --- ---   --- ----  ----------
+0    836   5   20  1121 10.1  CEIL_FLOOR
+0    118   1   10             @FLT
+0     56   0    4             @SFTOI
+0     54   0    2             @ITOF
+0    242   1   11             @MULFF
+0    618   4   16             @ADDFF
+0     24   0    4    43  2.1  floor
+0     26   0    4    44  1.9  ceil
+0    346   2   14             @DIVFF
+0    190   1   12   150  5.1  modf
+0      8   0    0             @PUTCHARI_BIU_1
+0    602   3    5  1909  6.4  MostrarINT32
+0    868   5   13  2447  7.9  MostrarFloat
+0     62   0    5             @FTOSD
+0   1932  11    6  1679  7.3  lectura_de_sensores
+0     52   0    4             @DTOF
+0   1186   7   12   917  7.9  Control_PID
+0    442   3    0   399  5.2  Actualizo_motores
+0    594   3    4   860  1.9  mostrar_pantalla
+0      6   0    0   860  1.9  @const835
+0     34   0    2             @PSTRINGC_9600_31766_31767
+0      6   0    0             @const837
+0      6   0    0             @const838
+0      6   0    0             @const839
+0      6   0    0             @const840
+0      6   0    0             @const841
+0      6   0    0             @const842
+0      6   0    0             @const843
+0      8   0    0             @const844
+0      6   0    0             @const845
+0    354   2    2   808  6.4  MAIN
+ Inline         0   808  6.4  @cinit1
+
+Program metrics:
+    Functions               13
+    Statements              514
+    Comments                488
+    Volume (V)              18243
+    Difficulty (D)          69.0
+    Effort to implement (E) 1258922
+    Time to implement (T)   19 hours, 26 minutes
+    Est Delivered Bugs (B)  4
+    Cyclomatic Complexity   43
+    Maintainability (MI)    70
+
+ Segment     Used  Free
+-----------  ----  ----
+00000-00002     4  0  
+00004-07FFE  8706  24058  
+
+
+

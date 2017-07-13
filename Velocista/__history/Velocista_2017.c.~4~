@@ -1,5 +1,5 @@
 #include <18F2550.h>
-#device ADC=10                             / 
+#device ADC=10                             
 #include <math.h>    
 #BYTE PORTA = 0xF80
 #BYTE PORTB = 0xF81
@@ -316,7 +316,7 @@ Void main()
      setup_timer_2(T2_DIV_BY_16,255,1);      //819 us overflow, 819 us interrupt
      setup_ccp1(CCP_PWM);
      setup_ccp2(CCP_PWM);
-    set_pwm1_duty((int16)1);      /
+    set_pwm1_duty((int16)1);      
      set_pwm2_duty((int16)1);
      setup_timer_0(RTCC_INTERNAL|RTCC_DIV_32|RTCC_8_bit);      //1,6 ms overflow
      enable_interrupts(INT_TIMER0);  

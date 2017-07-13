@@ -1,0 +1,212 @@
+000     @SCRATCH
+001     @SCRATCH
+001     _RETURN_
+002     @SCRATCH
+003     @SCRATCH
+004-005 RUIDO
+006-007 duty
+008-009 pwm_m_izq
+00A-00B pwm_m_der
+00C-00D curvas
+00E-011 aux32
+012-015 num
+016-019 den
+01A     aux
+01B     temp
+01C-025 TablaNumeros
+026-029 auxfloat
+02A     puntero
+02B-02E value
+02F-046 sensor
+047-05E sensor_valor_min
+05F-076 sensor_valor_max
+077-07A set_point
+07B-07E numerador
+07F-082 denominador
+083-086 promedio
+087-08A promedio_anterior
+08B-08E error
+08F-092 integral
+093-096 derivativo
+097-09A Pid
+09B-09E error_anterior
+09F-0A0 pwm
+0A1-0A2 ganancia_pwm
+0A3-0A6 valor_max
+0A7-0AA valor_min
+0AB.0   en_carrera
+0AC-0AF MostrarFloat.valor
+0AC-0AF lectura_de_sensores.num
+0AC-0AF Control_PID.Kp
+0AC-0AF atan2.y
+0AC     mostrar_pantalla.@SCRATCH1
+0AC     @PSTRINGC_9600_31766_31767.@SCRATCH1
+0AC     MAIN.@SCRATCH1
+0AD     mostrar_pantalla.@SCRATCH2
+0AD     @PSTRINGC_9600_31766_31767.@SCRATCH2
+0AD     MAIN.@SCRATCH2
+0AE     mostrar_pantalla.@SCRATCH3
+0AF     mostrar_pantalla.@SCRATCH4
+0B0-0B3 MostrarFloat.decimales
+0B0-0B3 Control_PID.Kd
+0B0-0B3 MostrarINT32.valor
+0B0-0B3 atan2.x
+0B0-0B3 lectura_de_sensores.den
+0B4-0B7 lectura_de_sensores.aux_sensor_float
+0B4-0B7 MostrarFloat.unidades
+0B4-0B7 atan2.z
+0B4     MostrarINT32.@SCRATCH1
+0B4     Control_PID.@SCRATCH1
+0B5     Control_PID.@SCRATCH2
+0B6     Control_PID.@SCRATCH3
+0B7     Control_PID.@SCRATCH4
+0B8-0BB lectura_de_sensores.num
+0B8.0   atan2.sign
+0B8-0BB modf.value
+0B8     MostrarFloat.@SCRATCH1
+0B9     atan2.quad
+0BC-0BD modf.iptr
+0BC-0BF lectura_de_sensores.den
+0BE     modf.@SCRATCH1
+0BF     modf.@SCRATCH2
+0C0-0C3 ceil.x
+0C0-0C3 lectura_de_sensores.aux_sensor_float
+0C0-0C3 floor.x
+0C0     modf.@SCRATCH3
+0C1     modf.@SCRATCH4
+0C2     modf.@SCRATCH5
+0C3     modf.@SCRATCH6
+0C4-0C7 CEIL_FLOOR.x
+0C4     lectura_de_sensores.@SCRATCH1
+0C5     lectura_de_sensores.@SCRATCH2
+0C6     lectura_de_sensores.@SCRATCH3
+0C7     lectura_de_sensores.@SCRATCH4
+0C8     CEIL_FLOOR.n
+0C8     lectura_de_sensores.@SCRATCH5
+0C9-0CC CEIL_FLOOR.y
+0C9     lectura_de_sensores.@SCRATCH6
+0CA-0CD @DTOF.P1
+0CA-0CD @DIVFF.P2
+0CA-0CD @FTOSD.P3
+0CD-0D0 CEIL_FLOOR.res
+0CE-0D1 @DIVFF.P1
+0CE     @FTOSD.@SCRATCH1
+0D1-0D2 CEIL_FLOOR.l
+0D2     @DIVFF.@SCRATCH1
+0D3.0   CEIL_FLOOR.s
+0D3     @DIVFF.@SCRATCH2
+0D4-0D7 @SFTOI.P1
+0D4-0D7 @FLT.P2
+0D4-0D7 @MULFF.P3
+0D4     CEIL_FLOOR.@SCRATCH1
+0D4     @DIVFF.@SCRATCH3
+0D5     CEIL_FLOOR.@SCRATCH2
+0D5     @DIVFF.@SCRATCH4
+0D6     CEIL_FLOOR.@SCRATCH3
+0D6     @DIVFF.@SCRATCH5
+0D7     CEIL_FLOOR.@SCRATCH4
+0D7     @DIVFF.@SCRATCH6
+0D8-0DB @ADDFF.P1
+0D8-0DB @MULFF.P2
+0D8-0DB @FLT.P3
+0D8-0D9 @ITOF.P4
+0DC-0DF @ADDFF.P1
+0DC     @FLT.@SCRATCH1
+0DC     @MULFF.@SCRATCH1
+0DD     @FLT.@SCRATCH2
+0DD     @MULFF.@SCRATCH2
+0DE     @MULFF.@SCRATCH3
+0E0     @ADDFF.@SCRATCH1
+0E1     @ADDFF.@SCRATCH2
+0E2     @ADDFF.@SCRATCH3
+0E3     @ADDFF.@SCRATCH4
+0E4     @ADDFF.@SCRATCH5
+0E5     @ADDFF.@SCRATCH6
+0E6     @ADDFF.@SCRATCH7
+0E7     @ADDFF.@SCRATCH8
+F80     PORTA
+F81     PORTB
+FB4.6   C1OUT
+FB4.7   C2OUT
+FBB     CCP_2_LOW
+FBB     CCP_2
+FBC     CCP_2_HIGH
+FBE     CCP_1_LOW
+FBE     CCP_1
+FBF     CCP_1_HIGH
+FE1-FE2 @WRITE_PACKED_MEMORY.P1
+FE1-FE2 @READ_PACKED_MEMORY.P2
+FE9-FEA @WRITE_PROGRAM_MEMORY.P1
+FE9-FEA @READ_PROGRAM_MEMORY.P2
+FE9-FEA @READ_PACKED_MEMORY.P3
+FE9-FEA @WRITE_PACKED_MEMORY.P4
+FF6-FF8 @READ_PROGRAM_MEMORY.P1
+FF6-FF8 @WRITE_PROGRAM_MEMORY.P2
+
+ROM Allocation:
+000004  @const835.call
+00000A  @const837.call
+000010  @const838.call
+000016  @const839.call
+00001C  @const840.call
+000022  @const841.call
+000028  @const842.call
+00002E  @const843.call
+000034  @const844.call
+00003C  @const845.call
+000042  @ITOF
+000078  @MULFF
+00016A  @DIVFF
+0002C4  @FLT
+00033A  @ADDFF
+0005A4  @FTOSD
+0005E2  @DTOF
+000616  @SFTOI
+00064E  lectura_de_sensores
+000DDA  Control_PID
+00127C  Actualizo_motores
+001436  @PSTRINGC_9600_31766_31767
+001458  @PUTCHARI_BIU_1
+001460  MostrarINT32
+0016BA  CEIL_FLOOR
+0019FE  ceil
+001A18  floor
+001A30  modf
+001AEE  MostrarFloat
+001E52  mostrar_pantalla
+0020A4  @cinit1
+0020A4  MAIN
+002100  @cinit2
+
+Project Directory:
+    F:\usuarios\alumno\Escritorio\Velocista\
+
+Project Files:
+    Velocista_2017_pic.c                                    [07-jul-17 00:06  CRC=C29CF252]
+    C:\Program Files (x86)\PICC\Devices\18F2550.h           [12-nov-13 14:35  CRC=13DBFC6E]
+    C:\Program Files (x86)\PICC\Drivers\math.h              [28-sep-12 11:35  CRC=546412C9]
+
+Source signature=7F411452
+
+Units:
+    Velocista_2017_pic (main)
+
+Compiler Settings:
+    Processor:      PIC18F2550
+    Pointer Size:   16
+    ADC Range:      0-1023
+    Opt Level:      9
+    Short,Int,Long: UNSIGNED: 1,8,16
+    Float,Double:   32,32
+
+Output Files:
+    XREF file:   Velocista_2017_pic.xsym
+    Errors:      Velocista_2017_pic.err
+    Ext Symbols: Velocista_2017_pic.esym
+    INHX32:      Velocista_2017_pic.hex
+    Symbols:     Velocista_2017_pic.sym
+    List:        Velocista_2017_pic.lst
+    Debug/COFF:  Velocista_2017_pic.cof
+    Project:     Velocista_2017_pic.ccspjt
+    Call Tree:   Velocista_2017_pic.tre
+    Statistics:  Velocista_2017_pic.STA
